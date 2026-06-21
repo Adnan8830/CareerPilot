@@ -36,7 +36,7 @@ jobs:
              
              
             - name: Publish API
-              run: dotnet publish -c Release -o publish --no-build
+              run: dotnet publish CareerPilot.API/CareerPilot.API.csproj -c Release -o publish
              
             
             
