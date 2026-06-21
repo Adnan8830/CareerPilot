@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="CareerPilot.API/CareerPilot.API.csproj" />
+  <Project Path="CareerPilot.Application/CareerPilot.Application.csproj" />
+  <Project Path="CareerPilot.Domain/CareerPilot.Domain.csproj" />
+  <Project Path="CareerPilot.Infrastructure/CareerPilot.Infrastructure.csproj" />
+</Solution>
