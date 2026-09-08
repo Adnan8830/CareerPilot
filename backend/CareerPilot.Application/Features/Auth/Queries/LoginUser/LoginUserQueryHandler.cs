@@ -5,14 +5,14 @@ using MediatR;
 
 namespace CareerPilot.Application.Features.Auth.Queries.LoginUser;
 
-    public class LoginUserQueryHandler : IRequestHandler<LoginUserQuery, string>
+    public class LoginUserQueryHandler : IRequestHandler<LoginUserQuery>
     {
         private readonly IUserRepository _userRepository;
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
     public LoginUserQueryHandler(IUserRepository userRepository, IJwtTokenGenerator jwtTokenGenerator) 
         => (_userRepository, _jwtTokenGenerator) = (userRepository,jwtTokenGenerator);
 
-        public async Task<string> Handle(LoginUserQuery request, CancellationToken cancellationToken)
+        public async Task Handle(LoginUserQuery request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByEmailAsync(request.Email);
              if (user is null) throw new UnauthorizedException("Invalid Credentials");
@@ -21,7 +21,9 @@ namespace CareerPilot.Application.Features.Auth.Queries.LoginUser;
         if(isValid is false)
             throw new UnauthorizedException("Invalid Credentials");
 
-        return _jwtTokenGenerator.GenerateToken(user.Id,user.Email);
+          _jwtTokenGenerator.GenerateToken(
+              user.Id,
+              user.Email);
 
     }
 

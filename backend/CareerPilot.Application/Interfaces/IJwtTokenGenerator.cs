@@ -8,5 +8,5 @@ namespace CareerPilot.Application.Interfaces;
 
 public interface IJwtTokenGenerator
 {
-    string GenerateToken(Guid userId, string email);
+    void GenerateToken(Guid userId, string email);
 }

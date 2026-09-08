@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using CareerPilot.API.Middleware;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,16 @@ builder.Services.AddDbContext<CareerPilotDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp => 
+{ 
+    var config = builder.Configuration["Redis:ConnectionString"]!;
+
+    return ConnectionMultiplexer.Connect(config);
+});
+
+builder.Services.AddScoped<ICacheService, RedisCacheService>();
+//builder.Services.AddMemoryCache();
+//builder.Services.AddScoped<ICacheService, MemoryCacheService>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -64,7 +75,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
             ClockSkew = TimeSpan.Zero
+        };
 
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                context.Token =
+                        context.Request.Cookies["AccessToken"];
+                return Task.CompletedTask;
+            }
         };
     });
 

@@ -31,9 +31,12 @@ namespace CareerPilot.API.Controllers
         
         public async Task<IActionResult> Login(LoginUserQuery query)
         {
-            var token = await _mediator.Send(query);
+             await _mediator.Send(query);
 
-            return Ok(new {Message="Login successful", Token = token });
+            return Ok(new 
+            {
+                Message="Login successful"
+            });
         }
 
 

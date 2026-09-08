@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 
 
@@ -16,12 +17,13 @@ namespace CareerPilot.Infrastructure.Services
     public class JwtTokenGenerator : IJwtTokenGenerator
     {
         private readonly IConfiguration _configuration;
-
-        public JwtTokenGenerator(IConfiguration configuration) => _configuration = configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public JwtTokenGenerator(IConfiguration configuration, IHttpContextAccessor httpContextAccessor) => 
+        (_configuration, _httpContextAccessor) = (configuration, httpContextAccessor);
         
 
 
-        public string GenerateToken(Guid userId, string email)
+        public void GenerateToken(Guid userId, string email)
         {
 
             var key = _configuration["Jwt:Key"];
@@ -48,8 +50,18 @@ namespace CareerPilot.Infrastructure.Services
             );
 
 
-            return new JwtSecurityTokenHandler()
-    .WriteToken(token);
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            _httpContextAccessor.HttpContext!.Response.Cookies.Append(
+                "AccessToken",
+                tokenString,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Path = "/"
+                });
 
         }
     }
