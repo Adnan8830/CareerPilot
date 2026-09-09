@@ -1,4 +1,5 @@
 ﻿using CareerPilot.Application.Features.Resumes.Commands.CreateResume;
+using CareerPilot.Application.Features.Resumes.Commands.UpdateResume;
 using CareerPilot.Application.Features.Resumes.Queries.GetMyResume;
 using CareerPilot.Application.Features.Resumes.Queries.GetResumeById;
 using MediatR;
@@ -43,5 +44,19 @@ public class ResumeController : ControllerBase
         var result = await _mediator.Send(
         new GetResumeByIdQuery(id));
         return Ok(result);
+    }
+
+    [HttpPut("{id:guid}")]
+    [Authorize]
+    public async Task<IActionResult> Update(
+    Guid id,
+    [FromBody] UpdateResumeCommand command)
+    {
+        if (id != command.Id)
+            return BadRequest("Resume ID mismatch.");
+
+        await _mediator.Send(command);
+
+        return NoContent();
     }
 }
