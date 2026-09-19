@@ -45,5 +45,7 @@ namespace CareerPilot.Application.Features.Resumes.Commands.UpdateResume
 
             await _cacheService.RemoveAsync(cacheKey);
         }
+
+      
     }
 }

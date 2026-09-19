@@ -1,4 +1,5 @@
 ﻿using CareerPilot.Application.Features.Resumes.Commands.CreateResume;
+using CareerPilot.Application.Features.Resumes.Commands.DeleteResume;
 using CareerPilot.Application.Features.Resumes.Commands.UpdateResume;
 using CareerPilot.Application.Features.Resumes.Queries.GetMyResume;
 using CareerPilot.Application.Features.Resumes.Queries.GetResumeById;
@@ -17,7 +18,7 @@ public class ResumeController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpPost]
+    [HttpPost("create")]
     [Authorize]
     public async Task<IActionResult> Create([FromBody]CreateResumeCommand command)
     {
@@ -57,6 +58,15 @@ public class ResumeController : ControllerBase
 
         await _mediator.Send(command);
 
+        return NoContent();
+    }
+
+    [HttpDelete("{id:guid}")]
+    [Authorize]
+
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await _mediator.Send(new DeleteResumeCommand(id));
         return NoContent();
     }
 }
