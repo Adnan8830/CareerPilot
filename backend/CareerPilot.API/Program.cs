@@ -50,9 +50,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactPolicy", policy => 
     {
-        policy.WithOrigins(allowedOrigins)
+        policy.WithOrigins(allowedOrigins!)
         .AllowAnyHeader()
-        .AllowAnyMethod();
+        .AllowAnyMethod()
+        .AllowCredentials();
     });
 });
 

@@ -54,5 +54,18 @@ namespace CareerPilot.API.Controllers
             });
         }
 
+
+        [Authorize]
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("AccessToken");
+
+            return Ok(new
+            {
+                Message = "Logged out successfully."
+            });
+        }
+
     }
 }

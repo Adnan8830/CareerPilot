@@ -1,0 +1,74 @@
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  padding: 20px 15px;
+  border-right: 1px solid #ddd;
+  background-color: #f8f9fa;
+  transition: width 0.3s ease;
+  box-sizing: border-box;
+}
+
+/* Collapsed sidebar */
+.sidebar.collapsed {
+  width: 70px;
+  padding: 20px 10px;
+}
+
+/* Toggle button */
+.sidebar button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+/* Navigation */
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Navigation links */
+.sidebar nav a {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  text-decoration: none;
+  color: #333;
+  border-radius: 6px;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+/* Active link */
+.sidebar nav a.active {
+  background-color: #e9ecef;
+  font-weight: 600;
+}
+
+/* Hover */
+.sidebar nav a:hover {
+  background-color: #e9ecef;
+}
+
+/* Collapsed navigation */
+.sidebar.collapsed nav a {
+  justify-content: center;
+  padding: 12px 0;
+  font-size: 20px;
+}
+
+/* Main content */
+.main-content {
+  flex: 1;
+  padding: 30px;
+}

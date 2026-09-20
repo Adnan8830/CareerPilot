@@ -1,25 +1,46 @@
-import { createContext, useState } from "react";
-import { login as loginApi } from "../api/authApi";
+  import { createContext, useState,useEffect } from "react";
+  import { login as loginApi, getCurrentUser,logout as logoutApi } from "../api/authApi";
 
-export const AuthContext = createContext();
+  export const AuthContext = createContext();
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  export function AuthProvider({ children }) {
+    const [user, setUser] = useState(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
-  const login = async (loginData) => {
-    const response = await loginApi(loginData);
-    localStorage.setItem("token", response.token);
-    setToken(response.token);
-  };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
-  };
-  return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
-}
+
+    useEffect(()=>{
+      const checkAuth = async()=>{
+        try{
+          const currentUserData = await getCurrentUser();
+          setUser(currentUserData);
+          setIsAuthenticated(true);
+        }catch(error){
+          setUser(null);
+          setIsAuthenticated(false);
+        }finally{
+          setIsLoading(false);
+        }
+      };
+      checkAuth();
+    },[]);
+
+
+    const login = async (loginData) => {
+      await loginApi(loginData);
+      setIsAuthenticated(true);
+    };
+
+    const logout = async () => {
+      await logoutApi();
+      setUser(null); 
+      setIsAuthenticated(false);
+    };
+
+    return (
+      <AuthContext.Provider value={{ user, isAuthenticated, login, logout, isLoading }}>
+        {children}
+      </AuthContext.Provider>
+    );
+  }
