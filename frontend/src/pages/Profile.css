@@ -1,0 +1,34 @@
+.profile-container {
+  max-width: 800px;
+}
+
+.profile-container h1 {
+  margin-bottom: 25px;
+}
+
+.profile-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 25px;
+  margin-bottom: 20px;
+}
+
+.profile-card h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.profile-field {
+  margin-bottom: 18px;
+}
+
+.profile-field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.profile-field p {
+  margin: 0;
+}

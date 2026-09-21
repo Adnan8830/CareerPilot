@@ -4,7 +4,7 @@ import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import MainLayout from "./layouts/MainLayout.jsx";
-
+import ProfilePage from "./pages/ProfilePage.jsx";
 function App() {
   return (
     <Routes>
@@ -13,8 +13,8 @@ function App() {
       <Route 
       element ={<ProtectedRoute><MainLayout /></ProtectedRoute>}
       >   
-      <Route path="/dashboard" element={<DashboardPage />}
-      />
+      <Route path="/dashboard" element={<DashboardPage />}/>
+      <Route path="/profile" element={<ProfilePage/>}/>
       </Route>
     </Routes>
   );
