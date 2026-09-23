@@ -6,6 +6,7 @@ function ProfilePage() {
   const [profile, setProfile] = useState(null);
   const [formData, setFormData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -37,7 +38,32 @@ function ProfilePage() {
     setIsEditing(false);
   };
 
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.firstName.trim()) {
+      errors.firstName = "First name is required";
+    }
+
+    if (!formData.lastName.trim()) {
+      errors.lastName = "Last name is required";
+    }
+
+    if (formData.yearsOfExperience < 0 || isNaN(formData.yearsOfExperience) || formData.yearsOfExperience === "") {
+      errors.yearsOfExperience = "Years of experience cannot be negative.";
+    }
+
+    return errors;
+  };
+
   const handleSave = async () => {
+    // Validate form data before sending the update request
+    const validationErrors = validateForm();
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     await updateProfile({
       firstName: formData.firstName,
       lastName: formData.lastName,
@@ -51,19 +77,16 @@ function ProfilePage() {
     setProfile(updatedProfile);
     setFormData(updatedProfile);
     setIsEditing(false);
+
+    setErrors({});
   };
 
   if (!profile) {
-    return (
-      <div className="profile-loading">
-        Loading profile...
-      </div>
-    );
+    return <div className="profile-loading">Loading profile...</div>;
   }
 
   return (
     <div className="profile-container">
-
       <div className="profile-top">
         <div>
           <h1>My Profile</h1>
@@ -90,9 +113,7 @@ function ProfilePage() {
 
           <p>{profile.email}</p>
 
-          <span>
-            {profile.yearsOfExperience} years experience
-          </span>
+          <span>{profile.yearsOfExperience} years experience</span>
         </div>
       </div>
 
@@ -105,20 +126,23 @@ function ProfilePage() {
         </div>
 
         <div className="profile-grid">
-
           <div className="profile-field">
             <label>First Name</label>
 
             {isEditing ? (
-              <input
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-              />
+              <>
+                <input
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                />
+
+                {errors.firstName && (
+                  <span className="field-error">{errors.firstName}</span>
+                )}
+              </>
             ) : (
-              <div className="field-value">
-                {profile.firstName}
-              </div>
+              <div className="field-value">{profile.firstName}</div>
             )}
           </div>
 
@@ -126,24 +150,26 @@ function ProfilePage() {
             <label>Last Name</label>
 
             {isEditing ? (
-              <input
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-              />
+              <>
+                <input
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                />
+
+                {errors.lastName && (
+                  <span className="field-error">{errors.lastName}</span>
+                )}
+              </>
             ) : (
-              <div className="field-value">
-                {profile.lastName}
-              </div>
+              <div className="field-value">{profile.lastName}</div>
             )}
           </div>
 
           <div className="profile-field full-width">
             <label>Email</label>
 
-            <div className="field-value disabled-field">
-              {profile.email}
-            </div>
+            <div className="field-value disabled-field">{profile.email}</div>
           </div>
 
           <div className="profile-field">
@@ -179,7 +205,6 @@ function ProfilePage() {
               </div>
             )}
           </div>
-
         </div>
       </div>
 
@@ -192,47 +217,46 @@ function ProfilePage() {
         </div>
 
         <div className="profile-grid">
-
           <div className="profile-field">
             <label>Years of Experience</label>
 
             {isEditing ? (
-              <input
-                type="number"
-                name="yearsOfExperience"
-                value={formData.yearsOfExperience}
-                onChange={handleChange}
-                min="0"
-                step="0.1"
-              />
+              <>
+                <input
+                  type="number"
+                  name="yearsOfExperience"
+                  value={formData.yearsOfExperience}
+                  onChange={handleChange}
+                  min="0"
+                  step="0.1"
+                />
+
+                {errors.yearsOfExperience && (
+                  <span className="field-error">
+                    {errors.yearsOfExperience}
+                  </span>
+                )}
+              </>
             ) : (
               <div className="field-value">
                 {profile.yearsOfExperience} years
               </div>
             )}
           </div>
-
         </div>
       </div>
 
       {isEditing && (
         <div className="profile-actions">
-          <button
-            className="cancel-button"
-            onClick={handleCancel}
-          >
+          <button className="cancel-button" onClick={handleCancel}>
             Cancel
           </button>
 
-          <button
-            className="save-button"
-            onClick={handleSave}
-          >
+          <button className="save-button" onClick={handleSave}>
             Save Changes
           </button>
         </div>
       )}
-
     </div>
   );
 }
